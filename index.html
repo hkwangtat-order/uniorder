@@ -376,9 +376,12 @@
             return;
         }
 
-        let msg = "海膽仔 訂貨單：\n";
-        msg += "------------------------\n";
+        // --- 在這裡設定客戶編號 (網頁不顯示，只發給你看) ---
+        const customerCode = "A2888"; 
 
+        // 訊息內容包含編號
+        let msg = `海膽仔  訂貨單：\n(客戶編號: ${customerCode})\n`;
+        msg += "------------------------\n";
         // 保持原順序
         const orderedCart = products.filter(p => cart[p.id]);
         
@@ -403,3 +406,4 @@
 </body>
 
 </html>
+
