@@ -9,9 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f8f9fa; padding-bottom: 100px; }
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f8f9fa; padding-bottom: 120px; }
         
-        /* 頂部客製化 (保留黑黃配色) */
+        /* 頂部客製化 */
         .top-bar { background-color: #212529; color: white; padding: 15px; position: sticky; top: 0; z-index: 1020; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         .client-name { font-size: 1.3rem; font-weight: 800; color: #ffc107; } 
         
@@ -21,35 +21,42 @@
         .nav-btn.active { background: #212529; color: #ffc107; border-color: #212529; }
 
         /* 搜尋框 */
-        .search-container { padding: 10px 15px; background: #f8f9fa; border-bottom: 1px solid #eee; position: relative; }
+        .search-section { background-color: #f8f9fa; padding: 10px 15px; border-bottom: 1px solid #ddd; }
+        .search-wrapper { position: relative; }
         .search-input { border-radius: 20px; border: 1px solid #ccc; padding: 8px 35px 8px 15px; width: 100%; }
-        .btn-clear-search { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); color: #adb5bd; cursor: pointer; font-size: 1.1rem; display: none; }
+        .btn-clear-search { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #adb5bd; cursor: pointer; font-size: 1.1rem; display: none; z-index: 10; }
 
         /* 分類標題 */
         .category-header { background-color: #fff3cd; color: #212529; font-weight: 800; font-size: 1.1rem; padding: 10px 15px; border-left: 6px solid #ffc107; margin-top: 0; scroll-margin-top: 130px; }
         
         /* 產品列表 */
         .product-row { background: white; border-bottom: 1px solid #eee; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .p-info { flex: 1; padding-right: 10px; overflow: hidden; }
         .p-name { font-size: 1.1rem; font-weight: 700; color: #000; line-height: 1.3; margin-bottom: 2px; }
         .p-cat-label { font-size: 0.75rem; color: #999; }
         
         /* 數量控制 */
         .qty-control { display: flex; align-items: center; background: #fff; border: 1px solid #ced4da; border-radius: 8px; width: 120px; justify-content: space-between; height: 38px; flex-shrink: 0; overflow: hidden; }
-        .qty-btn { width: 35px; height: 100%; border-radius: 0; background: #f8f9fa; color: #212529; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 1.2rem; user-select: none; }
+        .qty-btn { width: 35px; height: 100%; border-radius: 0; background: #f8f9fa; color: #212529; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 1.2rem; user-select: none; border: none; }
         .qty-btn:active { background: #ffc107; }
         .qty-input { width: 50px; text-align: center; border: none; font-weight: bold; font-size: 1.1rem; color: #333; background: transparent; padding: 0; }
         
         /* 選中樣式 */
         .product-row.selected { background-color: #fff9db; border-left: 5px solid #ffc107; }
 
-        /* 底部結帳欄 */
+        /* 底部結帳欄 (Standard V6 Style) */
         .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -4px 15px rgba(0,0,0,0.15); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1030; gap: 10px; }
         .total-box { font-size: 1.1rem; font-weight: bold; color: #333; }
         .total-num { color: #d32f2f; font-size: 1.4rem; padding: 0 3px; }
         
         /* 按鈕樣式 */
-        .btn-clear-cart { background-color: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 50px; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .btn-view-cart { background-color: #6c757d; color: white; border: none; padding: 10px 18px; border-radius: 50px; font-weight: bold; font-size: 0.95rem; white-space: nowrap; transition: all 0.3s ease; }
+        .btn-view-cart.active { background: linear-gradient(45deg, #ff9800, #ff5722); box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4); transform: scale(1.05); }
         .btn-whatsapp { background-color: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+
+        /* Modal Styles */
+        .modal-header { background-color: #212529; color: white; }
+        .modal-title { font-weight: bold; color: #ffc107; }
     </style>
 </head>
 <body>
@@ -79,14 +86,33 @@
 
 <div class="bottom-bar">
     <div class="total-box">
-        共 <span id="totalQty" class="total-num">0</span> 件
+        共 <span id="totalQty" class="total-num">0</span> 款
     </div>
-    <button class="btn-clear-cart" onclick="clearCart()">
-        <i class="bi bi-trash3"></i> 清空
+    <button id="viewCartBtn" class="btn-view-cart" onclick="openCartModal()" disabled>
+        <i class="bi bi-cart3"></i> 查看已選
     </button>
     <button class="btn-whatsapp" onclick="sendWhatsApp()">
         <i class="bi bi-whatsapp"></i> 發送訂單
     </button>
+</div>
+
+<div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">已選產品清單</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="cartModalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger me-auto" onclick="clearCart()">
+                    <i class="bi bi-trash"></i> 清空
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">繼續選購</button>
+                <button type="button" class="btn btn-success" onclick="sendWhatsApp()">確認發送</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -95,210 +121,41 @@
     const customerName = "海膽仔";
     const customerCode = "A2888";
 
-    // === 產品數據庫 (保持原順序) ===
+    // === 產品數據庫 ===
     const products = [
-        // --- 一、生鮮魚 ---
-        { name: "三文魚", cat: "一、生鮮魚" },
-        { name: "油甘魚", cat: "一、生鮮魚" },
-        { name: "魚箱", cat: "一、生鮮魚" },
-        { name: "生ト口", cat: "一、生鮮魚" },
-
-        // --- 二、凍貨 ---
-        { name: "三文魚籽", cat: "二、凍貨" },
-        { name: "鱒魚籽", cat: "二、凍貨" },
-        { name: "帶子3S", cat: "二、凍貨" },
-        { name: "M碼帶子", cat: "二、凍貨" },
-        { name: "左口魚邊IK", cat: "二、凍貨" },
-        { name: "鵝肝", cat: "二、凍貨" },
-        { name: "牡丹蝦", cat: "二、凍貨" },
-        { name: "赤蝦L1", cat: "二、凍貨" },
-        { name: "甘蝦3L", cat: "二、凍貨" },
-        { name: "罐裝蟹肉", cat: "二、凍貨" },
-        { name: "越河蟹膏", cat: "二、凍貨" },
-        { name: "蟹蓋", cat: "二、凍貨" },
-        { name: "熟帝皇蟹腳4L", cat: "二、凍貨" },
-        { name: "蟹子", cat: "二、凍貨" },
-        { name: "拖羅碎", cat: "二、凍貨" },
-        { name: "穴子", cat: "二、凍貨" },
-        { name: "大崎蟹柳", cat: "二、凍貨" },
-        { name: "熟熒光魷魚300g", cat: "二、凍貨" },
-        { name: "急凍芥辣", cat: "二、凍貨" },
-        { name: "紅綠雞冠", cat: "二、凍貨" },
-        { name: "鱘魚籽", cat: "二、凍貨" },
-        { name: "黑蟹子", cat: "二、凍貨" },
-        { name: "味付墨魚仔2K", cat: "二、凍貨" },
-        { name: "味付螺肉2K", cat: "二、凍貨" },
-        { name: "中華沙律2K", cat: "二、凍貨" },
-        { name: "帶子群邊2K", cat: "二、凍貨" },
-        { name: "芝麻八爪魚2K", cat: "二、凍貨" },
-        { name: "蒜頭潰", cat: "二、凍貨" },
-        { name: "大八爪魚日本", cat: "二、凍貨" },
-        { name: "壽司厚蛋", cat: "二、凍貨" },
-        { name: "磯煮鮑魚", cat: "二、凍貨" },
-        { name: "粟米粒", cat: "二、凍貨" },
-        { name: "鮟鱇魚肝", cat: "二、凍貨" },
-        { name: "凍柚子皮", cat: "二、凍貨" },
-        { name: "翡翠螺", cat: "二、凍貨" },
-        { name: "拖羅油", cat: "二、凍貨" },
-
-        // --- 三、壽司凍貨 ---
-        { name: "赤螺片", cat: "三、壽司凍貨" },
-        { name: "榮螺片", cat: "三、壽司凍貨" },
-        { name: "壽司赤蝦8L", cat: "三、壽司凍貨" },
-        { name: "無頭甜蝦1L", cat: "三、壽司凍貨" },
-        { name: "虎蝦10g", cat: "三、壽司凍貨" },
-        { name: "海膽蝦", cat: "三、壽司凍貨" },
-        { name: "玻璃蝦3L", cat: "三、壽司凍貨" },
-        { name: "熟蝦8L", cat: "三、壽司凍貨" },
-        { name: "魷魚片", cat: "三、壽司凍貨" },
-        { name: "紋甲魷魚日本", cat: "三、壽司凍貨" },
-        { name: "熟帆立貝開邊", cat: "三、壽司凍貨" },
-        { name: "象拔蚌", cat: "三、壽司凍貨" },
-        { name: "北寄貝片", cat: "三、壽司凍貨" },
-        { name: "赤貝片8g", cat: "三、壽司凍貨" },
-        { name: "馬刀貝10g", cat: "三、壽司凍貨" },
-        { name: "八爪魚片", cat: "三、壽司凍貨" },
-        { name: "KK蟹棒", cat: "三、壽司凍貨" },
-        { name: "鰻魚片8g", cat: "三、壽司凍貨" },
-        { name: "希靈魚6", cat: "三、壽司凍貨" },
-        { name: "醋青魚", cat: "三、壽司凍貨" },
-        { name: "三角付皮", cat: "三、壽司凍貨" },
-        { name: "芝士片", cat: "三、壽司凍貨" },
-        { name: "印尼中拖羅", cat: "三、壽司凍貨" },
-        { name: "海膽魷魚", cat: "三、壽司凍貨" },
-        { name: "黃金魷魚", cat: "三、壽司凍貨" },
-        { name: "櫻花魷魚", cat: "三、壽司凍貨" },
-        { name: "芥辣八爪魚", cat: "三、壽司凍貨" },
-        { name: "芝士蟹子", cat: "三、壽司凍貨" },
-        { name: "明太子沙律", cat: "三、壽司凍貨" },
-        { name: "龍蝦沙律", cat: "三、壽司凍貨" },
-        { name: "芝麻漬", cat: "三、壽司凍貨" },
-        { name: "薄餅", cat: "三、壽司凍貨" },
-        { name: "和牛片", cat: "三、壽司凍貨" },
-        { name: "池魚片", cat: "三、壽司凍貨" },
-
-        // --- 四、乾貨 ---
-        { name: "竹葉", cat: "四、乾貨" },
-        { name: "大葉", cat: "四、乾貨" },
-        { name: "小菊", cat: "四、乾貨" },
-        { name: "紅綠楓葉", cat: "四、乾貨" },
-        { name: "QP沙律汁", cat: "四、乾貨" },
-        { name: "和風沙律汁", cat: "四、乾貨" },
-        { name: "蒲燒鰻魚汁", cat: "四、乾貨" },
-        { name: "柚子醋", cat: "四、乾貨" },
-        { name: "香蒜牛油汁", cat: "四、乾貨" },
-        { name: "白芝麻", cat: "四、乾貨" },
-        { name: "912保鮮紙", cat: "四、乾貨" },
-        { name: "綿紙", cat: "四、乾貨" },
-        { name: "壽司手套S", cat: "四、乾貨" },
-        { name: "壽司手套M", cat: "四、乾貨" },
-        { name: "壽司手套L", cat: "四、乾貨" },
-        { name: "丁晴手套S", cat: "四、乾貨" },
-        { name: "丁晴手套M", cat: "四、乾貨" },
-        { name: "丁晴手套L", cat: "四、乾貨" },
-        { name: "大紫菜", cat: "四、乾貨" },
-        { name: "紫菜絲", cat: "四、乾貨" },
-        { name: "牛蒡漬", cat: "四、乾貨" },
-        { name: "合成醋", cat: "四、乾貨" },
-        { name: "壽司姜", cat: "四、乾貨" },
-        { name: "紅葉辣椒醬", cat: "四、乾貨" },
-        { name: "朝鮮醬桃屋", cat: "四、乾貨" },
-        { name: "羅白", cat: "四、乾貨" },
-        { name: "上白糖", cat: "四、乾貨" },
-        { name: "日本鹽", cat: "四、乾貨" },
-        { name: "77消毒藥水", cat: "四、乾貨" },
-        { name: "谷物醋", cat: "四、乾貨" },
-        { name: "軍艦紫菜", cat: "四、乾貨" },
-        { name: "三支葉", cat: "四、乾貨" },
-        { name: "白昆布木魚汁", cat: "四、乾貨" },
-        { name: "薄餅", cat: "四、乾貨" },
-
-        // --- 五、飲品、甜品 ---
-        { name: "沖繩啤酒Orion", cat: "五、飲品、甜品" },
-        { name: "獺祭720ml", cat: "五、飲品、甜品" },
-        { name: "京姬匠大吟 720ml", cat: "五、飲品、甜品" },
-        { name: "大嶺三粒米720ml", cat: "五、飲品、甜品" },
-        { name: "原味波子汽水", cat: "五、飲品、甜品" },
-        { name: "菠蘿味波子汽水", cat: "五、飲品、甜品" },
-        { name: "藍莓波子汽水", cat: "五、飲品、甜品" },
-        { name: "木村哈密瓜梳打", cat: "五、飲品、甜品" },
-        { name: "木村水蜜桃梳打", cat: "五、飲品、甜品" },
-        { name: "富士山柚子梳打", cat: "五、飲品、甜品" },
-        { name: "罐裝提子梳打", cat: "五、飲品、甜品" },
-        { name: "罐裝橙味梳打", cat: "五、飲品、甜品" },
-        { name: "罐裝原味梳打", cat: "五、飲品、甜品" },
-        { name: "罐裝哈密瓜梳打", cat: "五、飲品、甜品" },
-        { name: "外賣包裝豉油", cat: "五、飲品、甜品" },
-        { name: "外賣包裝介辣", cat: "五、飲品、甜品" },
-        { name: "玄米茶", cat: "五、飲品、甜品" },
-        { name: "大麥茶包", cat: "五、飲品、甜品" },
-        { name: "柚子蜜樽", cat: "五、飲品、甜品" },
-        { name: "原味泡芙", cat: "五、飲品、甜品" },
-        { name: "朱古力泡芙", cat: "五、飲品、甜品" },
-        { name: "芝士蛋糕", cat: "五、飲品、甜品" },
-        { name: "紅豆果子", cat: "五、飲品、甜品" },
-        { name: "七味粉包裝", cat: "五、飲品、甜品" },
-
-        // --- 六、外賣碗 ---
-        { name: "紅黑碗（加蓋）", cat: "六、外賣碗" },
-        { name: "沙律兜（加蓋）", cat: "六、外賣碗" },
-        { name: "豉油兜連蓋", cat: "六、外賣碗" },
-        { name: "魚生圓形波波碗（加蓋）", cat: "六、外賣碗" },
-        { name: "白色湯麵碗兩格 (預訂淘寶)", cat: "六、外賣碗" },
-        { name: "炸物小食紙盒 (細)", cat: "六、外賣碗" },
-        { name: "炸物小食紙盒 (大)", cat: "六、外賣碗" },
-        { name: "XYW00 壽司盒+蓋", cat: "六、外賣碗" },
-        { name: "XYW01 壽司盒+蓋", cat: "六、外賣碗" },
-        { name: "XYW02 壽司盒+蓋", cat: "六、外賣碗" },
-        { name: "XYW05 壽司盒+蓋", cat: "六、外賣碗" },
-        { name: "木盒正方形套裝 (大27x27) mm", cat: "六、外賣碗" },
-        { name: "木盒正方形套裝 (中24x24) mm", cat: "六、外賣碗" },
-        { name: "木盒正方形套裝 (小18x18) mm", cat: "六、外賣碗" },
-        { name: "木盒長方形套裝 (大175 x 235) mm", cat: "六、外賣碗" },
-        { name: "木盒長方形套裝 (中120 x 162) mm", cat: "六、外賣碗" },
-        { name: "木盒長方形套裝 (小85 x 200) mm", cat: "六、外賣碗" },
-        { name: "木盒長方形套裝 (加小85 x 150) mm", cat: "六、外賣碗" },
-        { name: "保溫袋黐膠紙小碼", cat: "六、外賣碗" },
-        { name: "保溫袋黐膠紙大碼", cat: "六、外賣碗" },
-        { name: "保溫袋拉鍊金色邊大碼", cat: "六、外賣碗" },
-        { name: "保溫袋拉鍊金色邊中碼", cat: "六、外賣碗" },
-        { name: "保溫袋拉鍊金色邊小碼", cat: "六、外賣碗" },
-        { name: "魚仔豉油 (預訂淘寶)", cat: "六、外賣碗" },
-        { name: "外賣筷子 (獨立包裝)", cat: "六、外賣碗" },
-        { name: "飲管 (獨立包裝)", cat: "六、外賣碗" },
-        { name: "紙杯+蓋", cat: "六、外賣碗" },
-        { name: "冰袋格子冰", cat: "六、外賣碗" },
-        { name: "海膽膠袋", cat: "六、外賣碗" },
-        { name: "餐枱紙", cat: "六、外賣碗" },
-        { name: "牙籤 (獨立包裝)", cat: "六、外賣碗" }
+        { name: "三文魚", cat: "一、生鮮魚" }, { name: "油甘魚", cat: "一、生鮮魚" }, { name: "魚箱", cat: "一、生鮮魚" }, { name: "生ト口", cat: "一、生鮮魚" },
+        { name: "三文魚籽", cat: "二、凍貨" }, { name: "鱒魚籽", cat: "二、凍貨" }, { name: "帶子3S", cat: "二、凍貨" }, { name: "M碼帶子", cat: "二、凍貨" }, { name: "左口魚邊IK", cat: "二、凍貨" }, { name: "鵝肝", cat: "二、凍貨" }, { name: "牡丹蝦", cat: "二、凍貨" }, { name: "赤蝦L1", cat: "二、凍貨" }, { name: "甘蝦3L", cat: "二、凍貨" }, { name: "罐裝蟹肉", cat: "二、凍貨" }, { name: "越河蟹膏", cat: "二、凍貨" }, { name: "蟹蓋", cat: "二、凍貨" }, { name: "熟帝皇蟹腳4L", cat: "二、凍貨" }, { name: "蟹子", cat: "二、凍貨" }, { name: "拖羅碎", cat: "二、凍貨" }, { name: "穴子", cat: "二、凍貨" }, { name: "大崎蟹柳", cat: "二、凍貨" }, { name: "熟熒光魷魚300g", cat: "二、凍貨" }, { name: "急凍芥辣", cat: "二、凍貨" }, { name: "紅綠雞冠", cat: "二、凍貨" }, { name: "鱘魚籽", cat: "二、凍貨" }, { name: "黑蟹子", cat: "二、凍貨" }, { name: "味付墨魚仔2K", cat: "二、凍貨" }, { name: "味付螺肉2K", cat: "二、凍貨" }, { name: "中華沙律2K", cat: "二、凍貨" }, { name: "帶子群邊2K", cat: "二、凍貨" }, { name: "芝麻八爪魚2K", cat: "二、凍貨" }, { name: "蒜頭潰", cat: "二、凍貨" }, { name: "大八爪魚日本", cat: "二、凍貨" }, { name: "壽司厚蛋", cat: "二、凍貨" }, { name: "磯煮鮑魚", cat: "二、凍貨" }, { name: "粟米粒", cat: "二、凍貨" }, { name: "鮟鱇魚肝", cat: "二、凍貨" }, { name: "凍柚子皮", cat: "二、凍貨" }, { name: "翡翠螺", cat: "二、凍貨" }, { name: "拖羅油", cat: "二、凍貨" },
+        { name: "赤螺片", cat: "三、壽司凍貨" }, { name: "榮螺片", cat: "三、壽司凍貨" }, { name: "壽司赤蝦8L", cat: "三、壽司凍貨" }, { name: "無頭甜蝦1L", cat: "三、壽司凍貨" }, { name: "虎蝦10g", cat: "三、壽司凍貨" }, { name: "海膽蝦", cat: "三、壽司凍貨" }, { name: "玻璃蝦3L", cat: "三、壽司凍貨" }, { name: "熟蝦8L", cat: "三、壽司凍貨" }, { name: "魷魚片", cat: "三、壽司凍貨" }, { name: "紋甲魷魚日本", cat: "三、壽司凍貨" }, { name: "熟帆立貝開邊", cat: "三、壽司凍貨" }, { name: "象拔蚌", cat: "三、壽司凍貨" }, { name: "北寄貝片", cat: "三、壽司凍貨" }, { name: "赤貝片8g", cat: "三、壽司凍貨" }, { name: "馬刀貝10g", cat: "三、壽司凍貨" }, { name: "八爪魚片", cat: "三、壽司凍貨" }, { name: "KK蟹棒", cat: "三、壽司凍貨" }, { name: "鰻魚片8g", cat: "三、壽司凍貨" }, { name: "希靈魚6", cat: "三、壽司凍貨" }, { name: "醋青魚", cat: "三、壽司凍貨" }, { name: "三角付皮", cat: "三、壽司凍貨" }, { name: "芝士片", cat: "三、壽司凍貨" }, { name: "印尼中拖羅", cat: "三、壽司凍貨" }, { name: "海膽魷魚", cat: "三、壽司凍貨" }, { name: "黃金魷魚", cat: "三、壽司凍貨" }, { name: "櫻花魷魚", cat: "三、壽司凍貨" }, { name: "芥辣八爪魚", cat: "三、壽司凍貨" }, { name: "芝士蟹子", cat: "三、壽司凍貨" }, { name: "明太子沙律", cat: "三、壽司凍貨" }, { name: "龍蝦沙律", cat: "三、壽司凍貨" }, { name: "芝麻漬", cat: "三、壽司凍貨" }, { name: "薄餅", cat: "三、壽司凍貨" }, { name: "和牛片", cat: "三、壽司凍貨" }, { name: "池魚片", cat: "三、壽司凍貨" },
+        { name: "竹葉", cat: "四、乾貨" }, { name: "大葉", cat: "四、乾貨" }, { name: "小菊", cat: "四、乾貨" }, { name: "紅綠楓葉", cat: "四、乾貨" }, { name: "QP沙律汁", cat: "四、乾貨" }, { name: "和風沙律汁", cat: "四、乾貨" }, { name: "蒲燒鰻魚汁", cat: "四、乾貨" }, { name: "柚子醋", cat: "四、乾貨" }, { name: "香蒜牛油汁", cat: "四、乾貨" }, { name: "白芝麻", cat: "四、乾貨" }, { name: "912保鮮紙", cat: "四、乾貨" }, { name: "綿紙", cat: "四、乾貨" }, { name: "壽司手套S", cat: "四、乾貨" }, { name: "壽司手套M", cat: "四、乾貨" }, { name: "壽司手套L", cat: "四、乾貨" }, { name: "丁晴手套S", cat: "四、乾貨" }, { name: "丁晴手套M", cat: "四、乾貨" }, { name: "丁晴手套L", cat: "四、乾貨" }, { name: "大紫菜", cat: "四、乾貨" }, { name: "紫菜絲", cat: "四、乾貨" }, { name: "牛蒡漬", cat: "四、乾貨" }, { name: "合成醋", cat: "四、乾貨" }, { name: "壽司姜", cat: "四、乾貨" }, { name: "紅葉辣椒醬", cat: "四、乾貨" }, { name: "朝鮮醬桃屋", cat: "四、乾貨" }, { name: "羅白", cat: "四、乾貨" }, { name: "上白糖", cat: "四、乾貨" }, { name: "日本鹽", cat: "四、乾貨" }, { name: "77消毒藥水", cat: "四、乾貨" }, { name: "谷物醋", cat: "四、乾貨" }, { name: "軍艦紫菜", cat: "四、乾貨" }, { name: "三支葉", cat: "四、乾貨" }, { name: "白昆布木魚汁", cat: "四、乾貨" }, { name: "薄餅", cat: "四、乾貨" },
+        { name: "沖繩啤酒Orion", cat: "五、飲品、甜品" }, { name: "獺祭720ml", cat: "五、飲品、甜品" }, { name: "京姬匠大吟 720ml", cat: "五、飲品、甜品" }, { name: "大嶺三粒米720ml", cat: "五、飲品、甜品" }, { name: "原味波子汽水", cat: "五、飲品、甜品" }, { name: "菠蘿味波子汽水", cat: "五、飲品、甜品" }, { name: "藍莓波子汽水", cat: "五、飲品、甜品" }, { name: "木村哈密瓜梳打", cat: "五、飲品、甜品" }, { name: "木村水蜜桃梳打", cat: "五、飲品、甜品" }, { name: "富士山柚子梳打", cat: "五、飲品、甜品" }, { name: "罐裝提子梳打", cat: "五、飲品、甜品" }, { name: "罐裝橙味梳打", cat: "五、飲品、甜品" }, { name: "罐裝原味梳打", cat: "五、飲品、甜品" }, { name: "罐裝哈密瓜梳打", cat: "五、飲品、甜品" }, { name: "外賣包裝豉油", cat: "五、飲品、甜品" }, { name: "外賣包裝介辣", cat: "五、飲品、甜品" }, { name: "玄米茶", cat: "五、飲品、甜品" }, { name: "大麥茶包", cat: "五、飲品、甜品" }, { name: "柚子蜜樽", cat: "五、飲品、甜品" }, { name: "原味泡芙", cat: "五、飲品、甜品" }, { name: "朱古力泡芙", cat: "五、飲品、甜品" }, { name: "芝士蛋糕", cat: "五、飲品、甜品" }, { name: "紅豆果子", cat: "五、飲品、甜品" }, { name: "七味粉包裝", cat: "五、飲品、甜品" },
+        { name: "紅黑碗（加蓋）", cat: "六、外賣碗" }, { name: "沙律兜（加蓋）", cat: "六、外賣碗" }, { name: "豉油兜連蓋", cat: "六、外賣碗" }, { name: "魚生圓形波波碗（加蓋）", cat: "六、外賣碗" }, { name: "白色湯麵碗兩格 (預訂淘寶)", cat: "六、外賣碗" }, { name: "炸物小食紙盒 (細)", cat: "六、外賣碗" }, { name: "炸物小食紙盒 (大)", cat: "六、外賣碗" }, { name: "XYW00 壽司盒+蓋", cat: "六、外賣碗" }, { name: "XYW01 壽司盒+蓋", cat: "六、外賣碗" }, { name: "XYW02 壽司盒+蓋", cat: "六、外賣碗" }, { name: "XYW05 壽司盒+蓋", cat: "六、外賣碗" }, { name: "木盒正方形套裝 (大27x27) mm", cat: "六、外賣碗" }, { name: "木盒正方形套裝 (中24x24) mm", cat: "六、外賣碗" }, { name: "木盒正方形套裝 (小18x18) mm", cat: "六、外賣碗" }, { name: "木盒長方形套裝 (大175 x 235) mm", cat: "六、外賣碗" }, { name: "木盒長方形套裝 (中120 x 162) mm", cat: "六、外賣碗" }, { name: "木盒長方形套裝 (小85 x 200) mm", cat: "六、外賣碗" }, { name: "木盒長方形套裝 (加小85 x 150) mm", cat: "六、外賣碗" }, { name: "保溫袋黐膠紙小碼", cat: "六、外賣碗" }, { name: "保溫袋黐膠紙大碼", cat: "六、外賣碗" }, { name: "保溫袋拉鍊金色邊大碼", cat: "六、外賣碗" }, { name: "保溫袋拉鍊金色邊中碼", cat: "六、外賣碗" }, { name: "保溫袋拉鍊金色邊小碼", cat: "六、外賣碗" }, { name: "魚仔豉油 (預訂淘寶)", cat: "六、外賣碗" }, { name: "外賣筷子 (獨立包裝)", cat: "六、外賣碗" }, { name: "飲管 (獨立包裝)", cat: "六、外賣碗" }, { name: "紙杯+蓋", cat: "六、外賣碗" }, { name: "冰袋格子冰", cat: "六、外賣碗" }, { name: "海膽膠袋", cat: "六、外賣碗" }, { name: "餐枱紙", cat: "六、外賣碗" }, { name: "牙籤 (獨立包裝)", cat: "六、外賣碗" }
     ];
 
-    // 生成唯一 ID
+    // 生成 ID (H001, H002...)
     products.forEach((p, index) => {
         p.id = "H" + (index + 1).toString().padStart(3, '0');
     });
 
     let cart = {}; 
+    let cartModal = null;
 
     // === 初始化 ===
     function init() {
-        loadCart(); // V6.0 自動讀取
+        loadCart(); // 自動讀取記憶
         renderNav();
         renderTable();
+        cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
     }
 
-    // === 核心：讀取記憶 ===
+    // === 記憶功能 ===
     function loadCart() {
         const savedCart = localStorage.getItem('orderCart_' + customerCode);
         if (savedCart) {
-            try {
-                cart = JSON.parse(savedCart);
-            } catch(e) { console.error("Cart load error", e); }
+            try { cart = JSON.parse(savedCart); } catch(e) { console.error("Error", e); }
         }
         calculateTotal();
     }
 
-    // === 核心：儲存記憶 ===
     function saveCart() {
         localStorage.setItem('orderCart_' + customerCode, JSON.stringify(cart));
     }
@@ -307,7 +164,6 @@
     function renderNav() {
         const categories = [...new Set(products.map(p => p.cat))];
         const container = document.getElementById('navContainer');
-        
         container.innerHTML = `<a href="javascript:void(0)" class="nav-btn active" onclick="filterCat('all', this)">全部</a>`;
         categories.forEach(cat => {
             const displayCat = cat.split('、')[1] || cat; 
@@ -331,7 +187,7 @@
         }
     }
 
-    // === 渲染列表 (手機極速搜) ===
+    // === 渲染產品列表 ===
     function renderTable(filterText = "") {
         const container = document.getElementById('product-list');
         let html = '';
@@ -347,22 +203,7 @@
                 currentCat = p.cat;
                 html += `<div class="category-header category-section" id="cat-${currentCat}">${currentCat}</div>`;
             }
-
-            const qty = cart[p.id] || 0;
-            const rowClass = qty > 0 ? 'selected' : '';
-
-            html += `
-            <div class="product-row ${rowClass}" id="row-${p.id}">
-                <div class="p-info">
-                    <div class="p-name">${p.name}</div>
-                    <div class="p-cat-label">${p.cat.split('、')[1] || p.cat}</div>
-                </div>
-                <div class="qty-control">
-                    <div class="qty-btn" onclick="updateQty('${p.id}', -1)">-</div>
-                    <input type="text" class="qty-input" id="qty-${p.id}" value="${qty}" readonly>
-                    <div class="qty-btn" onclick="updateQty('${p.id}', 1)">+</div>
-                </div>
-            </div>`;
+            html += createRowHtml(p);
         });
 
         if (filteredProducts.length === 0) {
@@ -371,78 +212,140 @@
         container.innerHTML = html;
     }
 
-    function filterProducts() {
-        const input = document.getElementById('searchInput');
-        const clearBtn = document.getElementById('clearSearchBtn');
-        const text = input.value;
+    function createRowHtml(p) {
+        const qty = cart[p.id] || 0;
+        const rowClass = qty > 0 ? 'selected' : '';
+        // 確保 ID 唯一，避免與 Modal 衝突
+        return `
+        <div class="product-row ${rowClass}" id="row-${p.id}">
+            <div class="p-info">
+                <div class="p-name">${p.name}</div>
+                <div class="p-cat-label">${p.cat.split('、')[1] || p.cat}</div>
+            </div>
+            <div class="qty-control">
+                <div class="qty-btn" onclick="updateQty('${p.id}', -1)">-</div>
+                <input type="text" class="qty-input" id="qty-${p.id}" value="${qty}" readonly>
+                <div class="qty-btn" onclick="updateQty('${p.id}', 1)">+</div>
+            </div>
+        </div>`;
+    }
 
-        if (text.length > 0) {
-            clearBtn.style.display = 'block';
-        } else {
-            clearBtn.style.display = 'none';
-        }
+    function filterProducts() {
+        const text = document.getElementById('searchInput').value;
+        const clearBtn = document.getElementById('clearSearchBtn');
+        clearBtn.style.display = text.length > 0 ? 'block' : 'none';
         renderTable(text);
     }
 
     function clearSearch() {
-        const input = document.getElementById('searchInput');
-        input.value = '';
+        document.getElementById('searchInput').value = '';
         document.getElementById('clearSearchBtn').style.display = 'none';
         renderTable('');
     }
 
-    // === 更新數量 (連動記憶) ===
+    // === 核心更新邏輯 ===
     function updateQty(id, delta) {
         if (!cart[id]) cart[id] = 0;
         cart[id] += delta;
         if (cart[id] <= 0) delete cart[id];
         
-        // Update DOM directly for performance
-        const input = document.getElementById(`qty-${id}`);
-        if (input) {
-            input.value = cart[id] || 0;
+        // 同步 Main List
+        const mainInput = document.getElementById(`qty-${id}`);
+        if (mainInput) {
+            mainInput.value = cart[id] || 0;
             const row = document.getElementById(`row-${id}`);
             if (cart[id] > 0) row.classList.add('selected');
             else row.classList.remove('selected');
         }
+
+        // 同步 Modal (如果開著)
+        if (document.getElementById('cartModal').classList.contains('show')) {
+            renderCartModalItems();
+        }
         
-        saveCart(); // Auto Save
+        saveCart();
         calculateTotal();
     }
 
     function calculateTotal() {
         let count = 0;
-        for (let [id, q] of Object.entries(cart)) {
-            count += q; 
-        }
+        for (let key in cart) count++; // 計算款數，非總件數，符合 V6 邏輯
         document.getElementById('totalQty').innerText = count;
+        
+        const btn = document.getElementById('viewCartBtn');
+        if (count > 0) {
+            btn.classList.add('active');
+            btn.disabled = false;
+            btn.innerHTML = `<i class="bi bi-cart-check-fill"></i> 查看已選 (${count})`;
+        } else {
+            btn.classList.remove('active');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="bi bi-cart3"></i> 查看已選`;
+        }
+    }
+
+    // === 購物車 Modal 邏輯 ===
+    function openCartModal() {
+        renderCartModalItems();
+        cartModal.show();
+    }
+
+    function renderCartModalItems() {
+        const container = document.getElementById('cartModalBody');
+        const items = products.filter(p => cart[p.id]);
+        
+        if (items.length === 0) {
+            container.innerHTML = '<div class="text-center p-4 text-muted">尚未選擇任何產品</div>';
+            return;
+        }
+
+        let html = '';
+        items.forEach(p => {
+            // 在 Modal 中使用相同的 style，但 ID 不需要重複，因為 updateQty 會處理
+            // 為了避免 ID 衝突，Modal 裡的 input 不設 id，只做顯示
+            const qty = cart[p.id];
+            html += `
+            <div class="product-row selected">
+                <div class="p-info">
+                    <div class="p-name">${p.name}</div>
+                </div>
+                <div class="qty-control">
+                    <div class="qty-btn" onclick="updateQty('${p.id}', -1)">-</div>
+                    <input type="text" class="qty-input" value="${qty}" readonly>
+                    <div class="qty-btn" onclick="updateQty('${p.id}', 1)">+</div>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
     }
 
     function clearCart() {
         if (Object.keys(cart).length === 0) return;
-        if (confirm("確定要清空購物車嗎？")) {
+        if (confirm("確定要清空所有已選貨品嗎？")) {
             cart = {};
             localStorage.removeItem('orderCart_' + customerCode);
-            renderTable(); // Re-render to clear highlights
+            renderTable(); // 重繪主列表移除選中狀態
             calculateTotal();
+            renderCartModalItems(); // 重繪 Modal
         }
     }
 
+    // === 發送 WhatsApp ===
     function sendWhatsApp() {
         if (Object.keys(cart).length === 0) {
             alert("請先選擇產品！");
             return;
         }
 
-        let msg = `${customerName} 訂貨單：\n(客戶編號: ${customerCode})\n`;
+        let msg = `海膽仔 訂貨單：\n(客戶編號: ${customerCode})\n`;
         msg += "------------------------\n";
         
-        // Keep original order
+        // 保持原分類順序
         const orderedCart = products.filter(p => cart[p.id]);
         
         orderedCart.forEach(p => {
             const q = cart[p.id];
-            msg += ` ${q}  ${p.name}\n`;
+            msg += ` ${q}  ${p.name}\n`; // 格式: 數量 名稱
         });
 
         msg += "------------------------\n";
