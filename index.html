@@ -44,7 +44,7 @@
         /* 選中樣式 */
         .product-row.selected { background-color: #fff9db; border-left: 5px solid #ffc107; }
 
-        /* 底部結帳欄 (Standard V6 Style) */
+        /* 底部結帳欄 */
         .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -4px 15px rgba(0,0,0,0.15); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1030; gap: 10px; }
         .total-box { font-size: 1.1rem; font-weight: bold; color: #333; }
         .total-num { color: #d32f2f; font-size: 1.4rem; padding: 0 3px; }
@@ -121,13 +121,28 @@
     const customerName = "海膽仔";
     const customerCode = "A2888";
 
-    // === 產品數據庫 ===
+    // === 產品數據庫 (已拆分雞冠與楓葉) ===
     const products = [
         { name: "三文魚", cat: "一、生鮮魚" }, { name: "油甘魚", cat: "一、生鮮魚" }, { name: "魚箱", cat: "一、生鮮魚" }, { name: "生ト口", cat: "一、生鮮魚" },
-        { name: "三文魚籽", cat: "二、凍貨" }, { name: "鱒魚籽", cat: "二、凍貨" }, { name: "帶子3S", cat: "二、凍貨" }, { name: "M碼帶子", cat: "二、凍貨" }, { name: "左口魚邊IK", cat: "二、凍貨" }, { name: "鵝肝", cat: "二、凍貨" }, { name: "牡丹蝦", cat: "二、凍貨" }, { name: "赤蝦L1", cat: "二、凍貨" }, { name: "甘蝦3L", cat: "二、凍貨" }, { name: "罐裝蟹肉", cat: "二、凍貨" }, { name: "越河蟹膏", cat: "二、凍貨" }, { name: "蟹蓋", cat: "二、凍貨" }, { name: "熟帝皇蟹腳4L", cat: "二、凍貨" }, { name: "蟹子", cat: "二、凍貨" }, { name: "拖羅碎", cat: "二、凍貨" }, { name: "穴子", cat: "二、凍貨" }, { name: "大崎蟹柳", cat: "二、凍貨" }, { name: "熟熒光魷魚300g", cat: "二、凍貨" }, { name: "急凍芥辣", cat: "二、凍貨" }, { name: "紅綠雞冠", cat: "二、凍貨" }, { name: "鱘魚籽", cat: "二、凍貨" }, { name: "黑蟹子", cat: "二、凍貨" }, { name: "味付墨魚仔2K", cat: "二、凍貨" }, { name: "味付螺肉2K", cat: "二、凍貨" }, { name: "中華沙律2K", cat: "二、凍貨" }, { name: "帶子群邊2K", cat: "二、凍貨" }, { name: "芝麻八爪魚2K", cat: "二、凍貨" }, { name: "蒜頭潰", cat: "二、凍貨" }, { name: "大八爪魚日本", cat: "二、凍貨" }, { name: "壽司厚蛋", cat: "二、凍貨" }, { name: "磯煮鮑魚", cat: "二、凍貨" }, { name: "粟米粒", cat: "二、凍貨" }, { name: "鮟鱇魚肝", cat: "二、凍貨" }, { name: "凍柚子皮", cat: "二、凍貨" }, { name: "翡翠螺", cat: "二、凍貨" }, { name: "拖羅油", cat: "二、凍貨" },
+        
+        { name: "三文魚籽", cat: "二、凍貨" }, { name: "鱒魚籽", cat: "二、凍貨" }, { name: "帶子3S", cat: "二、凍貨" }, { name: "M碼帶子", cat: "二、凍貨" }, { name: "左口魚邊IK", cat: "二、凍貨" }, { name: "鵝肝", cat: "二、凍貨" }, { name: "牡丹蝦", cat: "二、凍貨" }, { name: "赤蝦L1", cat: "二、凍貨" }, { name: "甘蝦3L", cat: "二、凍貨" }, { name: "罐裝蟹肉", cat: "二、凍貨" }, { name: "越河蟹膏", cat: "二、凍貨" }, { name: "蟹蓋", cat: "二、凍貨" }, { name: "熟帝皇蟹腳4L", cat: "二、凍貨" }, { name: "蟹子", cat: "二、凍貨" }, { name: "拖羅碎", cat: "二、凍貨" }, { name: "穴子", cat: "二、凍貨" }, { name: "大崎蟹柳", cat: "二、凍貨" }, { name: "熟熒光魷魚300g", cat: "二、凍貨" }, { name: "急凍芥辣", cat: "二、凍貨" }, 
+        
+        // 拆分雞冠
+        { name: "紅雞冠", cat: "二、凍貨" }, { name: "綠雞冠", cat: "二、凍貨" }, 
+        
+        { name: "鱘魚籽", cat: "二、凍貨" }, { name: "黑蟹子", cat: "二、凍貨" }, { name: "味付墨魚仔2K", cat: "二、凍貨" }, { name: "味付螺肉2K", cat: "二、凍貨" }, { name: "中華沙律2K", cat: "二、凍貨" }, { name: "帶子群邊2K", cat: "二、凍貨" }, { name: "芝麻八爪魚2K", cat: "二、凍貨" }, { name: "蒜頭潰", cat: "二、凍貨" }, { name: "大八爪魚日本", cat: "二、凍貨" }, { name: "壽司厚蛋", cat: "二、凍貨" }, { name: "磯煮鮑魚", cat: "二、凍貨" }, { name: "粟米粒", cat: "二、凍貨" }, { name: "鮟鱇魚肝", cat: "二、凍貨" }, { name: "凍柚子皮", cat: "二、凍貨" }, { name: "翡翠螺", cat: "二、凍貨" }, { name: "拖羅油", cat: "二、凍貨" },
+        
         { name: "赤螺片", cat: "三、壽司凍貨" }, { name: "榮螺片", cat: "三、壽司凍貨" }, { name: "壽司赤蝦8L", cat: "三、壽司凍貨" }, { name: "無頭甜蝦1L", cat: "三、壽司凍貨" }, { name: "虎蝦10g", cat: "三、壽司凍貨" }, { name: "海膽蝦", cat: "三、壽司凍貨" }, { name: "玻璃蝦3L", cat: "三、壽司凍貨" }, { name: "熟蝦8L", cat: "三、壽司凍貨" }, { name: "魷魚片", cat: "三、壽司凍貨" }, { name: "紋甲魷魚日本", cat: "三、壽司凍貨" }, { name: "熟帆立貝開邊", cat: "三、壽司凍貨" }, { name: "象拔蚌", cat: "三、壽司凍貨" }, { name: "北寄貝片", cat: "三、壽司凍貨" }, { name: "赤貝片8g", cat: "三、壽司凍貨" }, { name: "馬刀貝10g", cat: "三、壽司凍貨" }, { name: "八爪魚片", cat: "三、壽司凍貨" }, { name: "KK蟹棒", cat: "三、壽司凍貨" }, { name: "鰻魚片8g", cat: "三、壽司凍貨" }, { name: "希靈魚6", cat: "三、壽司凍貨" }, { name: "醋青魚", cat: "三、壽司凍貨" }, { name: "三角付皮", cat: "三、壽司凍貨" }, { name: "芝士片", cat: "三、壽司凍貨" }, { name: "印尼中拖羅", cat: "三、壽司凍貨" }, { name: "海膽魷魚", cat: "三、壽司凍貨" }, { name: "黃金魷魚", cat: "三、壽司凍貨" }, { name: "櫻花魷魚", cat: "三、壽司凍貨" }, { name: "芥辣八爪魚", cat: "三、壽司凍貨" }, { name: "芝士蟹子", cat: "三、壽司凍貨" }, { name: "明太子沙律", cat: "三、壽司凍貨" }, { name: "龍蝦沙律", cat: "三、壽司凍貨" }, { name: "芝麻漬", cat: "三、壽司凍貨" }, { name: "薄餅", cat: "三、壽司凍貨" }, { name: "和牛片", cat: "三、壽司凍貨" }, { name: "池魚片", cat: "三、壽司凍貨" },
-        { name: "竹葉", cat: "四、乾貨" }, { name: "大葉", cat: "四、乾貨" }, { name: "小菊", cat: "四、乾貨" }, { name: "紅綠楓葉", cat: "四、乾貨" }, { name: "QP沙律汁", cat: "四、乾貨" }, { name: "和風沙律汁", cat: "四、乾貨" }, { name: "蒲燒鰻魚汁", cat: "四、乾貨" }, { name: "柚子醋", cat: "四、乾貨" }, { name: "香蒜牛油汁", cat: "四、乾貨" }, { name: "白芝麻", cat: "四、乾貨" }, { name: "912保鮮紙", cat: "四、乾貨" }, { name: "綿紙", cat: "四、乾貨" }, { name: "壽司手套S", cat: "四、乾貨" }, { name: "壽司手套M", cat: "四、乾貨" }, { name: "壽司手套L", cat: "四、乾貨" }, { name: "丁晴手套S", cat: "四、乾貨" }, { name: "丁晴手套M", cat: "四、乾貨" }, { name: "丁晴手套L", cat: "四、乾貨" }, { name: "大紫菜", cat: "四、乾貨" }, { name: "紫菜絲", cat: "四、乾貨" }, { name: "牛蒡漬", cat: "四、乾貨" }, { name: "合成醋", cat: "四、乾貨" }, { name: "壽司姜", cat: "四、乾貨" }, { name: "紅葉辣椒醬", cat: "四、乾貨" }, { name: "朝鮮醬桃屋", cat: "四、乾貨" }, { name: "羅白", cat: "四、乾貨" }, { name: "上白糖", cat: "四、乾貨" }, { name: "日本鹽", cat: "四、乾貨" }, { name: "77消毒藥水", cat: "四、乾貨" }, { name: "谷物醋", cat: "四、乾貨" }, { name: "軍艦紫菜", cat: "四、乾貨" }, { name: "三支葉", cat: "四、乾貨" }, { name: "白昆布木魚汁", cat: "四、乾貨" }, { name: "薄餅", cat: "四、乾貨" },
+        
+        { name: "竹葉", cat: "四、乾貨" }, { name: "大葉", cat: "四、乾貨" }, { name: "小菊", cat: "四、乾貨" }, 
+        
+        // 拆分楓葉
+        { name: "紅楓葉", cat: "四、乾貨" }, { name: "綠楓葉", cat: "四、乾貨" },
+        
+        { name: "QP沙律汁", cat: "四、乾貨" }, { name: "和風沙律汁", cat: "四、乾貨" }, { name: "蒲燒鰻魚汁", cat: "四、乾貨" }, { name: "柚子醋", cat: "四、乾貨" }, { name: "香蒜牛油汁", cat: "四、乾貨" }, { name: "白芝麻", cat: "四、乾貨" }, { name: "912保鮮紙", cat: "四、乾貨" }, { name: "綿紙", cat: "四、乾貨" }, { name: "壽司手套S", cat: "四、乾貨" }, { name: "壽司手套M", cat: "四、乾貨" }, { name: "壽司手套L", cat: "四、乾貨" }, { name: "丁晴手套S", cat: "四、乾貨" }, { name: "丁晴手套M", cat: "四、乾貨" }, { name: "丁晴手套L", cat: "四、乾貨" }, { name: "大紫菜", cat: "四、乾貨" }, { name: "紫菜絲", cat: "四、乾貨" }, { name: "牛蒡漬", cat: "四、乾貨" }, { name: "合成醋", cat: "四、乾貨" }, { name: "壽司姜", cat: "四、乾貨" }, { name: "紅葉辣椒醬", cat: "四、乾貨" }, { name: "朝鮮醬桃屋", cat: "四、乾貨" }, { name: "羅白", cat: "四、乾貨" }, { name: "上白糖", cat: "四、乾貨" }, { name: "日本鹽", cat: "四、乾貨" }, { name: "77消毒藥水", cat: "四、乾貨" }, { name: "谷物醋", cat: "四、乾貨" }, { name: "軍艦紫菜", cat: "四、乾貨" }, { name: "三支葉", cat: "四、乾貨" }, { name: "白昆布木魚汁", cat: "四、乾貨" }, { name: "薄餅", cat: "四、乾貨" },
+        
         { name: "沖繩啤酒Orion", cat: "五、飲品、甜品" }, { name: "獺祭720ml", cat: "五、飲品、甜品" }, { name: "京姬匠大吟 720ml", cat: "五、飲品、甜品" }, { name: "大嶺三粒米720ml", cat: "五、飲品、甜品" }, { name: "原味波子汽水", cat: "五、飲品、甜品" }, { name: "菠蘿味波子汽水", cat: "五、飲品、甜品" }, { name: "藍莓波子汽水", cat: "五、飲品、甜品" }, { name: "木村哈密瓜梳打", cat: "五、飲品、甜品" }, { name: "木村水蜜桃梳打", cat: "五、飲品、甜品" }, { name: "富士山柚子梳打", cat: "五、飲品、甜品" }, { name: "罐裝提子梳打", cat: "五、飲品、甜品" }, { name: "罐裝橙味梳打", cat: "五、飲品、甜品" }, { name: "罐裝原味梳打", cat: "五、飲品、甜品" }, { name: "罐裝哈密瓜梳打", cat: "五、飲品、甜品" }, { name: "外賣包裝豉油", cat: "五、飲品、甜品" }, { name: "外賣包裝介辣", cat: "五、飲品、甜品" }, { name: "玄米茶", cat: "五、飲品、甜品" }, { name: "大麥茶包", cat: "五、飲品、甜品" }, { name: "柚子蜜樽", cat: "五、飲品、甜品" }, { name: "原味泡芙", cat: "五、飲品、甜品" }, { name: "朱古力泡芙", cat: "五、飲品、甜品" }, { name: "芝士蛋糕", cat: "五、飲品、甜品" }, { name: "紅豆果子", cat: "五、飲品、甜品" }, { name: "七味粉包裝", cat: "五、飲品、甜品" },
+        
         { name: "紅黑碗（加蓋）", cat: "六、外賣碗" }, { name: "沙律兜（加蓋）", cat: "六、外賣碗" }, { name: "豉油兜連蓋", cat: "六、外賣碗" }, { name: "魚生圓形波波碗（加蓋）", cat: "六、外賣碗" }, { name: "白色湯麵碗兩格 (預訂淘寶)", cat: "六、外賣碗" }, { name: "炸物小食紙盒 (細)", cat: "六、外賣碗" }, { name: "炸物小食紙盒 (大)", cat: "六、外賣碗" }, { name: "XYW00 壽司盒+蓋", cat: "六、外賣碗" }, { name: "XYW01 壽司盒+蓋", cat: "六、外賣碗" }, { name: "XYW02 壽司盒+蓋", cat: "六、外賣碗" }, { name: "XYW05 壽司盒+蓋", cat: "六、外賣碗" }, { name: "木盒正方形套裝 (大27x27) mm", cat: "六、外賣碗" }, { name: "木盒正方形套裝 (中24x24) mm", cat: "六、外賣碗" }, { name: "木盒正方形套裝 (小18x18) mm", cat: "六、外賣碗" }, { name: "木盒長方形套裝 (大175 x 235) mm", cat: "六、外賣碗" }, { name: "木盒長方形套裝 (中120 x 162) mm", cat: "六、外賣碗" }, { name: "木盒長方形套裝 (小85 x 200) mm", cat: "六、外賣碗" }, { name: "木盒長方形套裝 (加小85 x 150) mm", cat: "六、外賣碗" }, { name: "保溫袋黐膠紙小碼", cat: "六、外賣碗" }, { name: "保溫袋黐膠紙大碼", cat: "六、外賣碗" }, { name: "保溫袋拉鍊金色邊大碼", cat: "六、外賣碗" }, { name: "保溫袋拉鍊金色邊中碼", cat: "六、外賣碗" }, { name: "保溫袋拉鍊金色邊小碼", cat: "六、外賣碗" }, { name: "魚仔豉油 (預訂淘寶)", cat: "六、外賣碗" }, { name: "外賣筷子 (獨立包裝)", cat: "六、外賣碗" }, { name: "飲管 (獨立包裝)", cat: "六、外賣碗" }, { name: "紙杯+蓋", cat: "六、外賣碗" }, { name: "冰袋格子冰", cat: "六、外賣碗" }, { name: "海膽膠袋", cat: "六、外賣碗" }, { name: "餐枱紙", cat: "六、外賣碗" }, { name: "牙籤 (獨立包裝)", cat: "六、外賣碗" }
     ];
 
@@ -141,7 +156,7 @@
 
     // === 初始化 ===
     function init() {
-        loadCart(); // 自動讀取記憶
+        loadCart(); 
         renderNav();
         renderTable();
         cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
@@ -215,7 +230,6 @@
     function createRowHtml(p) {
         const qty = cart[p.id] || 0;
         const rowClass = qty > 0 ? 'selected' : '';
-        // 確保 ID 唯一，避免與 Modal 衝突
         return `
         <div class="product-row ${rowClass}" id="row-${p.id}">
             <div class="p-info">
@@ -249,7 +263,6 @@
         cart[id] += delta;
         if (cart[id] <= 0) delete cart[id];
         
-        // 同步 Main List
         const mainInput = document.getElementById(`qty-${id}`);
         if (mainInput) {
             mainInput.value = cart[id] || 0;
@@ -258,7 +271,6 @@
             else row.classList.remove('selected');
         }
 
-        // 同步 Modal (如果開著)
         if (document.getElementById('cartModal').classList.contains('show')) {
             renderCartModalItems();
         }
@@ -269,7 +281,7 @@
 
     function calculateTotal() {
         let count = 0;
-        for (let key in cart) count++; // 計算款數，非總件數，符合 V6 邏輯
+        for (let key in cart) count++; 
         document.getElementById('totalQty').innerText = count;
         
         const btn = document.getElementById('viewCartBtn');
@@ -301,8 +313,6 @@
 
         let html = '';
         items.forEach(p => {
-            // 在 Modal 中使用相同的 style，但 ID 不需要重複，因為 updateQty 會處理
-            // 為了避免 ID 衝突，Modal 裡的 input 不設 id，只做顯示
             const qty = cart[p.id];
             html += `
             <div class="product-row selected">
@@ -324,9 +334,9 @@
         if (confirm("確定要清空所有已選貨品嗎？")) {
             cart = {};
             localStorage.removeItem('orderCart_' + customerCode);
-            renderTable(); // 重繪主列表移除選中狀態
+            renderTable(); 
             calculateTotal();
-            renderCartModalItems(); // 重繪 Modal
+            renderCartModalItems(); 
         }
     }
 
@@ -340,12 +350,11 @@
         let msg = `海膽仔 訂貨單：\n(客戶編號: ${customerCode})\n`;
         msg += "------------------------\n";
         
-        // 保持原分類順序
         const orderedCart = products.filter(p => cart[p.id]);
         
         orderedCart.forEach(p => {
             const q = cart[p.id];
-            msg += ` ${q}  ${p.name}\n`; // 格式: 數量 名稱
+            msg += ` ${q}  ${p.name}\n`; 
         });
 
         msg += "------------------------\n";
