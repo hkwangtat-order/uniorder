@@ -5,85 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta property="og:title" content="海膽仔 - 專用電子落單表">
     <meta property="og:description" content="香港宏達有限公司提供">
-    <meta property="og:image" content="cover.jpg">
-    
     <title>海膽仔 - 專用訂貨單</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f8f9fa; padding-bottom: 100px; }
         
-        /* 頂部客製化 */
-        .top-bar { background-color: #212529; color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        /* 頂部客製化 (保留黑黃配色) */
+        .top-bar { background-color: #212529; color: white; padding: 15px; position: sticky; top: 0; z-index: 1020; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
         .client-name { font-size: 1.3rem; font-weight: 800; color: #ffc107; } 
         
         /* 導航按鈕 */
-        .nav-scroller { overflow-x: auto; white-space: nowrap; padding: 10px; background: white; border-bottom: 1px solid #ddd; position: sticky; top: 70px; z-index: 990; }
-        .nav-btn { display: inline-block; padding: 8px 16px; margin-right: 8px; border-radius: 20px; border: 1px solid #ccc; color: #333; text-decoration: none; font-size: 0.95rem; background: #fff; font-weight: 600; }
+        .nav-scroller { overflow-x: auto; white-space: nowrap; padding: 10px 10px 0 10px; background: white; border-bottom: 1px solid #ddd; position: sticky; top: 70px; z-index: 990; }
+        .nav-btn { display: inline-block; padding: 8px 16px; margin-right: 8px; margin-bottom: 10px; border-radius: 20px; border: 1px solid #ccc; color: #333; text-decoration: none; font-size: 0.95rem; background: #fff; font-weight: 600; transition: all 0.2s; }
         .nav-btn.active { background: #212529; color: #ffc107; border-color: #212529; }
 
+        /* 搜尋框 */
+        .search-container { padding: 10px 15px; background: #f8f9fa; border-bottom: 1px solid #eee; position: relative; }
+        .search-input { border-radius: 20px; border: 1px solid #ccc; padding: 8px 35px 8px 15px; width: 100%; }
+        .btn-clear-search { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); color: #adb5bd; cursor: pointer; font-size: 1.1rem; display: none; }
+
         /* 分類標題 */
-        .category-header { background-color: #fff3cd; color: #212529; font-weight: 800; font-size: 1.2rem; padding: 15px; border-left: 6px solid #ffc107; margin-top: 0; scroll-margin-top: 130px; }
+        .category-header { background-color: #fff3cd; color: #212529; font-weight: 800; font-size: 1.1rem; padding: 10px 15px; border-left: 6px solid #ffc107; margin-top: 0; scroll-margin-top: 130px; }
         
-        /* 產品列表 - 極簡版 */
-        .product-row { background: white; border-bottom: 1px solid #eee; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        /* 產品名稱字體加大 */
-        .p-name { font-size: 1.15rem; font-weight: 700; color: #000; line-height: 1.4; }
+        /* 產品列表 */
+        .product-row { background: white; border-bottom: 1px solid #eee; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .p-name { font-size: 1.1rem; font-weight: 700; color: #000; line-height: 1.3; margin-bottom: 2px; }
+        .p-cat-label { font-size: 0.75rem; color: #999; }
         
         /* 數量控制 */
-        .qty-control { display: flex; align-items: center; background: #fff; border: 1px solid #ced4da; border-radius: 8px; padding: 2px; width: 130px; justify-content: space-between; height: 45px; flex-shrink: 0; margin-left: 10px; }
-        .qty-btn { width: 40px; height: 100%; border-radius: 6px; background: #f8f9fa; color: #212529; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 1.5rem; user-select: none; }
+        .qty-control { display: flex; align-items: center; background: #fff; border: 1px solid #ced4da; border-radius: 8px; width: 120px; justify-content: space-between; height: 38px; flex-shrink: 0; overflow: hidden; }
+        .qty-btn { width: 35px; height: 100%; border-radius: 0; background: #f8f9fa; color: #212529; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 1.2rem; user-select: none; }
         .qty-btn:active { background: #ffc107; }
-        .qty-input { width: 40px; text-align: center; border: none; font-weight: bold; font-size: 1.3rem; color: #333; background: transparent; }
+        .qty-input { width: 50px; text-align: center; border: none; font-weight: bold; font-size: 1.1rem; color: #333; background: transparent; padding: 0; }
         
         /* 選中樣式 */
-        .product-row.selected { background-color: #fffbf0; border-left: 5px solid #ffc107; }
+        .product-row.selected { background-color: #fff9db; border-left: 5px solid #ffc107; }
 
         /* 底部結帳欄 */
-        .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1020; }
-        .total-info { font-size: 1.2rem; font-weight: bold; color: #333; }
-        .btn-whatsapp { background: #25D366; color: white; border: none; padding: 12px 35px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+        .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -4px 15px rgba(0,0,0,0.15); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1030; gap: 10px; }
+        .total-box { font-size: 1.1rem; font-weight: bold; color: #333; }
+        .total-num { color: #d32f2f; font-size: 1.4rem; padding: 0 3px; }
         
-        /* 搜尋框 */
-        .search-container { padding: 10px; background: white; position: sticky; top: 120px; z-index: 980; border-bottom: 1px solid #eee; }
-        .form-control { border-radius: 20px; padding: 10px 20px; background-color: #f1f3f5; border: none; font-size: 1rem; }
+        /* 按鈕樣式 */
+        .btn-clear-cart { background-color: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 50px; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .btn-whatsapp { background-color: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
-    <div class="d-flex justify-content-between align-items-center">
+<div class="sticky-header-container">
+    <div class="top-bar d-flex justify-content-between align-items-center">
         <div>
             <div class="client-name">海膽仔</div>
-            <div style="font-size: 0.9rem; opacity: 0.9; color: #ddd;">專用訂貨單 </div>
+            <div style="font-size: 0.8rem; color: #ccc;">A2888</div>
         </div>
-        <div style="text-align: right; font-size: 0.85rem; color: #ccc;">
+        <div style="text-align: right; font-size: 0.8rem; color: #ccc;">
             宏達批發<br>Tel: 63771688
         </div>
     </div>
+
+    <div class="nav-scroller" id="navContainer"></div>
+
+    <div class="search-section">
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋產品..." oninput="filterProducts()">
+            <i class="bi bi-x-circle-fill btn-clear-search" id="clearSearchBtn" onclick="clearSearch()"></i>
+        </div>
+    </div>
 </div>
 
-<div class="nav-scroller" id="navContainer">
-    </div>
-
-<div class="search-container">
-    <input type="text" id="searchInput" class="form-control" placeholder="🔍 輸入關鍵字搵貨..." onkeyup="filterProducts()">
-</div>
-
-<div id="product-list">
-    </div>
+<div id="product-list" style="padding-top: 10px;"></div>
 
 <div class="bottom-bar">
-    <div class="total-info">
-        共 <span id="totalQty" style="color: #d32f2f; font-size: 1.5rem;">0</span> 件貨品
+    <div class="total-box">
+        共 <span id="totalQty" class="total-num">0</span> 件
     </div>
+    <button class="btn-clear-cart" onclick="clearCart()">
+        <i class="bi bi-trash3"></i> 清空
+    </button>
     <button class="btn-whatsapp" onclick="sendWhatsApp()">
         <i class="bi bi-whatsapp"></i> 發送訂單
     </button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    // === 產品數據庫 (海膽仔專用 - 嚴格按照表格順序) ===
+    const customerName = "海膽仔";
+    const customerCode = "A2888";
+
+    // === 產品數據庫 (保持原順序) ===
     const products = [
         // --- 一、生鮮魚 ---
         { name: "三文魚", cat: "一、生鮮魚" },
@@ -261,27 +273,43 @@
         { name: "牙籤 (獨立包裝)", cat: "六、外賣碗" }
     ];
 
-    // 為每個產品生成唯一 ID (方便系統運作，介面不顯示)
+    // 生成唯一 ID
     products.forEach((p, index) => {
-        p.id = "P" + (index + 1).toString().padStart(3, '0');
+        p.id = "H" + (index + 1).toString().padStart(3, '0');
     });
 
     let cart = {}; 
 
     // === 初始化 ===
     function init() {
+        loadCart(); // V6.0 自動讀取
         renderNav();
         renderTable();
     }
 
-    // === 渲染分類導航 ===
+    // === 核心：讀取記憶 ===
+    function loadCart() {
+        const savedCart = localStorage.getItem('orderCart_' + customerCode);
+        if (savedCart) {
+            try {
+                cart = JSON.parse(savedCart);
+            } catch(e) { console.error("Cart load error", e); }
+        }
+        calculateTotal();
+    }
+
+    // === 核心：儲存記憶 ===
+    function saveCart() {
+        localStorage.setItem('orderCart_' + customerCode, JSON.stringify(cart));
+    }
+
+    // === 渲染導航 ===
     function renderNav() {
         const categories = [...new Set(products.map(p => p.cat))];
         const container = document.getElementById('navContainer');
         
         container.innerHTML = `<a href="javascript:void(0)" class="nav-btn active" onclick="filterCat('all', this)">全部</a>`;
         categories.forEach(cat => {
-            // 移除分類標題中的數字編號以便顯示美觀 (可選)
             const displayCat = cat.split('、')[1] || cat; 
             container.innerHTML += `<a href="#cat-${cat}" class="nav-btn" onclick="filterCat('${cat}', this)">${displayCat}</a>`;
         });
@@ -292,17 +320,18 @@
         btn.classList.add('active');
         if (cat === 'all') {
             document.querySelectorAll('.category-section').forEach(el => el.style.display = 'block');
+            window.scrollTo(0, 0);
         } else {
             const target = document.getElementById(`cat-${cat}`);
             if (target) {
-                const offset = 120; 
+                const offset = 140; 
                 const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
                 window.scrollTo({ top: elementPosition - offset, behavior: "smooth" });
             }
         }
     }
 
-    // === 渲染產品列表 ===
+    // === 渲染列表 (手機極速搜) ===
     function renderTable(filterText = "") {
         const container = document.getElementById('product-list');
         let html = '';
@@ -323,8 +352,11 @@
             const rowClass = qty > 0 ? 'selected' : '';
 
             html += `
-            <div class="product-row ${rowClass}">
-                <div class="p-name">${p.name}</div>
+            <div class="product-row ${rowClass}" id="row-${p.id}">
+                <div class="p-info">
+                    <div class="p-name">${p.name}</div>
+                    <div class="p-cat-label">${p.cat.split('、')[1] || p.cat}</div>
+                </div>
                 <div class="qty-control">
                     <div class="qty-btn" onclick="updateQty('${p.id}', -1)">-</div>
                     <input type="text" class="qty-input" id="qty-${p.id}" value="${qty}" readonly>
@@ -340,27 +372,44 @@
     }
 
     function filterProducts() {
-        const text = document.getElementById('searchInput').value;
+        const input = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const text = input.value;
+
+        if (text.length > 0) {
+            clearBtn.style.display = 'block';
+        } else {
+            clearBtn.style.display = 'none';
+        }
         renderTable(text);
     }
 
-    // === 更新數量 ===
+    function clearSearch() {
+        const input = document.getElementById('searchInput');
+        input.value = '';
+        document.getElementById('clearSearchBtn').style.display = 'none';
+        renderTable('');
+    }
+
+    // === 更新數量 (連動記憶) ===
     function updateQty(id, delta) {
         if (!cart[id]) cart[id] = 0;
         cart[id] += delta;
         if (cart[id] <= 0) delete cart[id];
         
+        // Update DOM directly for performance
         const input = document.getElementById(`qty-${id}`);
         if (input) {
             input.value = cart[id] || 0;
-            const row = input.closest('.product-row');
+            const row = document.getElementById(`row-${id}`);
             if (cart[id] > 0) row.classList.add('selected');
             else row.classList.remove('selected');
         }
+        
+        saveCart(); // Auto Save
         calculateTotal();
     }
 
-    // === 計算總數 ===
     function calculateTotal() {
         let count = 0;
         for (let [id, q] of Object.entries(cart)) {
@@ -369,32 +418,36 @@
         document.getElementById('totalQty').innerText = count;
     }
 
-    // === 發送 WhatsApp (極簡版) ===
+    function clearCart() {
+        if (Object.keys(cart).length === 0) return;
+        if (confirm("確定要清空購物車嗎？")) {
+            cart = {};
+            localStorage.removeItem('orderCart_' + customerCode);
+            renderTable(); // Re-render to clear highlights
+            calculateTotal();
+        }
+    }
+
     function sendWhatsApp() {
         if (Object.keys(cart).length === 0) {
             alert("請先選擇產品！");
             return;
         }
 
-        // --- 在這裡設定客戶編號 (網頁不顯示，只發給你看) ---
-        const customerCode = "A2888"; 
-
-        // 訊息內容包含編號
-        let msg = `海膽仔  訂貨單：\n(客戶編號: ${customerCode})\n`;
+        let msg = `${customerName} 訂貨單：\n(客戶編號: ${customerCode})\n`;
         msg += "------------------------\n";
-        // 保持原順序
+        
+        // Keep original order
         const orderedCart = products.filter(p => cart[p.id]);
         
         orderedCart.forEach(p => {
             const q = cart[p.id];
-            // 只顯示：名稱 x 數量
-            msg += `${p.name} x ${q}\n`;
+            msg += ` ${q}  ${p.name}\n`;
         });
 
         msg += "------------------------\n";
         msg += "麻煩晒！"; 
 
-        // 宏達電話
         const phone = "85263771688";
         const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
         window.open(url, '_blank');
@@ -404,6 +457,4 @@
 </script>
 
 </body>
-
 </html>
-
